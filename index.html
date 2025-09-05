@@ -179,33 +179,34 @@
         /* ===========================
     MENU DE NAVEGAÇÃO
     ============================ */
-        /* Comentário para organizar a seção de CSS. */
         nav ul {
             display: flex;
             gap: 30px;
-            /* **AJUSTADO:** Aumenta o espaçamento entre os itens do menu para evitar quebra de linha e melhorar a legibilidade. */
         }
 
-        /* Estiliza a lista do menu para exibir os itens em linha e com espaçamento. */
-        nav ul li a {
+        nav ul li a,
+        #traduzir-btn {
+            /* Estilo geral para links e o botão de tradução */
             font-weight: 600;
             font-size: 14px;
             color: #555;
-            /* Define o peso, tamanho e cor da fonte dos links. */
             padding: 8px 15px;
             border-radius: 6px;
-            /* Adiciona padding e arredondamento nas bordas. */
             transition: background-color 0.3s ease, color 0.3s ease;
-            /* Adiciona uma transição suave para as cores. */
             white-space: nowrap;
-            /* **ADICIONADO:** Impede que o texto quebre para a próxima linha, mantendo-o em uma única linha. */
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            text-decoration: none;
         }
 
         nav ul li a:hover,
-        nav ul li a.active {
+        nav ul li a.active,
+        #traduzir-btn:hover {
+            /* Estilo quando o mouse passa por cima */
             background: linear-gradient(90deg, #ff7200, #ff4a00);
             color: white;
-            /* Define o estilo ao passar o mouse ou quando o link está ativo. */
+            border-color: transparent;
         }
 
         /* Os outros estilos do seu CSS permanecem os mesmos */
@@ -685,23 +686,24 @@
 
 <body>
         <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <img src="imagens/bandeira-sergipe.png" alt="Bandeira de Sergipe" class="logo-bandeira">
-                    <div>
-                        <div class="logo-text">Sergipe Cultural</div>
-                        <div class="logo-subtitle">Turismo e Cultura</div>
-                    </div>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <img src="imagens/bandeira-sergipe.png" alt="Bandeira de Sergipe" class="logo-bandeira">
+                <div>
+                    <div class="logo-text">Sergipe Cultural</div>
+                    <div class="logo-subtitle">Turismo e Cultura</div>
                 </div>
-                <ul>
-                    <li><a href="#explorar" class="active">Explorar Pontos Turísticos</a></li>
-                    <li><a href="#galeria">Galeria</a></li>
-                    <li><a href="#mapa">Mapa</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+            </div>
+            <ul>
+                <li><a href="#explorar" class="active">Explorar Pontos Turísticos</a></li>
+                <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#mapa">Mapa</a></li>
+            </ul>
+            <div id="google_translate_element"></div>
+        </nav>
+    </div>
+</header>
 
         <section class="banner">
                 <div class="banner-content">
@@ -826,35 +828,27 @@
                       </div>
                 </div>
           </section>
+    ...
+    <section id="mapa">
+        <h2>Mapa de Pontos Turísticos</h2>
+        <div id="map"></div>
+    </section>
 
-        <section id="mapa">
-                <h2>Mapa de Pontos Turísticos</h2>
-                <div id="map"></div>
-              </section>
+    <footer>
+        <p>
+            Links Úteis:
+            <a href="https://www.turismo.se.gov.br/" target="_blank" rel="noopener noreferrer">Secretaria de Turismo de
+                Sergipe</a> |
+            <a href="https://guiadoturismo.com.br/sergipe" target="_blank" rel="noopener noreferrer">Guia Turístico
+                Oficial</a>
+        </p>
+        <p>Visite Sergipe - Melhor época: Abril a Setembro</p>
+        <p>© 2024 Sergipe Cultural. Promovendo o turismo cultural sergipano.</p>
+    </footer>
 
-        <footer>
-                <p>
-                        Links Úteis:
-                        <a href="https://www.turismo.se.gov.br/" target="_blank" rel="noopener noreferrer">Secretaria de
-                Turismo de
-                                Sergipe</a> |
-                        <a href="https://guiadoturismo.com.br/sergipe" target="_blank" rel="noopener noreferrer">Guia
-                Turístico
-                                Oficial</a>
-                      </p>
-                <p>Visite Sergipe - Melhor época: Abril a Setembro</p>
-                <p>© 2024 Sergipe Cultural. Promovendo o turismo cultural sergipano.</p>
-              </footer>
-
-       
-     
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-         
-     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
 
-       
-     
     <script>
         // Inicializa o mapa com Leaflet
         // Comentário sobre a funcionalidade do código.
@@ -892,10 +886,9 @@
             // Adiciona o marcador recém-criado ao array 'markers'.
         });
 
-
         /* ===========================
-           JAVASCRIPT DO CARROSSEL
-           NOVO: Código para o carrossel interativo
+            JAVASCRIPT DO CARROSSEL
+            NOVO: Código para o carrossel interativo
         ============================ */
         const carouselInner = document.querySelector('.carousel-inner');
         // Seleciona o elemento que contém todos os itens do carrossel
@@ -984,6 +977,41 @@
 
         // Exibe o primeiro item do carrossel ao carregar a página
         showItem(0);
+    </script>
+
+    ...
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <script type="text/javascript">
+        // Função que inicializa o Google Tradutor
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'pt', // Define o idioma original da sua página (Português)
+                includedLanguages: 'en,es,fr,de', // Idiomas que o usuário poderá escolher: Inglês, Espanhol, Francês e Alemão.
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script>
+        // Adiciona um "ouvinte de eventos" ao botão com o ID 'traduzir-btn'
+        document.getElementById('traduzir-btn').addEventListener('click', function (e) {
+            e.preventDefault(); // Impede que o link recarregue a página
+
+            // Encontra o elemento de seleção de idioma que a API do Google Tradutor cria
+            var translateElement = document.getElementById('google_translate_element');
+            var selectElement = translateElement.querySelector('.goog-te-combo');
+
+            if (selectElement) {
+                // Simula um clique de mouse para abrir o menu suspenso com as opções de idioma
+                var evt = document.createEvent('MouseEvents');
+                evt.initMouseEvent('mousedown', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                selectElement.dispatchEvent(evt);
+            }
+        });
     </script>
 </body>
 
