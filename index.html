@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<!-- Define que o documento é HTML5 -->
+
+<html lang="pt-BR">
+<!-- Define o idioma da página como português do Brasil -->
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Define codificação UTF-8 para suportar acentos e caracteres especiais -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Ajusta a largura da página de acordo com a tela do dispositivo (responsivo) -->
+
+  <title>Sergipe Cultural</title>
+  <!-- Título da aba do navegador -->
+
+  <!-- Link CSS do Leaflet (biblioteca de mapas interativos) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    /* ===========================
+       RESET GLOBAL
+    ============================ */
+    * {
+      margin: 0; /* Remove margens padrão */
+      padding: 0; /* Remove padding padrão */
+      box-sizing: border-box; /* Inclui padding e border no tamanho total */
+    }
+
+    /* ===========================
+       ESTILO GERAL DO BODY
+    ============================ */
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Fonte moderna e legível */
+      background: linear-gradient(135deg, #fff2cc 0%, #ffe6e1 100%); /* Fundo degradê amarelo/rosa */
+      color: #333; /* Cor padrão do texto */
+      line-height: 1.5; /* Espaçamento entre linhas */
+    }
+
+    /* ===========================
+       LINKS
+    ============================ */
+    a {
+      text-decoration: none; /* Remove sublinhado dos links */
+      color: inherit; /* Herda a cor do texto */
+    }
+
+    /* ===========================
+       LISTAS
+    ============================ */
+    ul {
+      list-style: none; /* Remove marcadores das listas */
+    }
+
+    /* ===========================
+       CABEÇALHO FIXO
+    ============================ */
+    header {
+      background: #fff; /* Fundo branco */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Sombra leve */
+      position: sticky; /* Cabeçalho fixo no topo */
+      top: 0; /* Posicionado no topo */
+      z-index: 1000; /* Fica acima de outros elementos */
+    }
+
+    /* ===========================
+       CONTAINER CENTRAL
+    ============================ */
+    .container {
+      max-width: 1100px; /* Largura máxima do conteúdo */
+      margin: auto; /* Centraliza horizontalmente */
+      padding: 0 20px; /* Espaçamento lateral */
+    }
+
+    /* ===========================
+       NAVBAR
+    ============================ */
+    nav {
+      display: flex; /* Flexbox para alinhar horizontalmente */
+      align-items: center; /* Alinha verticalmente ao centro */
+      justify-content: space-between; /* Espaço entre elementos */
+      height: 70px; /* Altura fixa da barra */
+    }
+
+    /* ===========================
+       LOGO
+    ============================ */
+    .logo {
+      display: flex; /* Ícone + texto em linha */
+      align-items: center; /* Alinhamento vertical */
+      gap: 10px; /* Espaçamento entre ícone e texto */
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #ff7200, #ff4a00); /* Degradê laranja */
+      border-radius: 8px; /* Bordas arredondadas */
+      display: flex; justify-content: center; align-items: center; /* Centraliza conteúdo */
+      color: white; font-weight: 700; font-size: 20px;
+      box-shadow: 0 0 8px rgba(255,114,0,0.8); /* Sombra laranja */
+    }
+
+    .logo-text { font-weight: 700; font-size: 22px; color: #d84300; line-height: 1; }
+    .logo-subtitle { font-size: 12px; color: #777; }
+
+    /* ===========================
+       MENU DE NAVEGAÇÃO
+    ============================ */
+    nav ul { display: flex; gap: 20px; }
+    nav ul li a {
+      font-weight: 600; font-size: 14px; color: #555;
+      padding: 8px 15px; border-radius: 6px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    nav ul li a:hover, nav ul li a.active {
+      background: linear-gradient(90deg, #ff7200, #ff4a00); color: white;
+    }
+
+    /* ===========================
+       BANNER
+    ============================ */
+    .banner {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') center center/cover no-repeat;
+      height: 400px; position: relative; color: #f0d28a;
+      text-align: center; display: flex; flex-direction: column; justify-content: center;
+    }
+    .banner::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+    .banner-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    .banner-content h1 { font-size: 3rem; font-weight: 900; text-shadow: 2px 2px 10px #00000088; }
+    .banner-content p { font-size: 1.2rem; margin-top: 10px; text-shadow: 1px 1px 8px #00000088; }
+    .btn-explore {
+      margin-top: 20px; background: linear-gradient(90deg, #ff7200, #ff4a00); color: white;
+      border: none; padding: 12px 25px; font-weight: 700; font-size: 1rem;
+      border-radius: 30px; cursor: pointer; transition: background 0.3s ease;
+      box-shadow: 0 3px 8px rgba(255,114,0,0.7);
+    }
+    .btn-explore:hover { background: linear-gradient(90deg, #ff4a00, #ff7200); }
+
+    /* ===========================
+       SEÇÃO POR QUE VISITAR
+    ============================ */
+    .section-why { background: #fff8f3; padding: 40px 20px; text-align: center; }
+    .section-why h2 { font-weight: 900; font-size: 2rem; color: #d84300; margin-bottom: 15px; }
+    .section-why p { font-size: 1.1rem; color: #555; margin-bottom: 30px; }
+    .why-cards { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
+    .why-card {
+      background: white; border-radius: 12px; box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      padding: 20px; width: 280px; display: flex; flex-direction: column; align-items: center; text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .why-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+    .why-card svg { width: 48px; height: 48px; margin-bottom: 15px; fill: #d84300; }
+    .why-card h3 { font-weight: 700; margin-bottom: 10px; color: #d84300; }
+    .why-card p { font-size: 0.95rem; color: #666; }
+
+    /* ===========================
+       SEÇÃO PONTOS TURÍSTICOS
+    ============================ */
+    .section-culture { padding: 40px 20px; background: #fff; text-align: center; }
+    .section-culture h2 { font-weight: 900; font-size: 2rem; color: #d84300; margin-bottom: 30px; }
+    .culture-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+    .culture-card { background: #fff8f3; border-radius: 12px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); width: 320px; overflow: hidden; transition: transform 0.3s ease; cursor: pointer; }
+    .culture-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+    .culture-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .culture-card-content { padding: 15px; text-align: left; }
+    .culture-card-content h3 { font-weight: 700; color: #d84300; margin-bottom: 8px; font-size: 1.1rem; }
+    .culture-card-content p { font-size: 0.95rem; color: #555; }
+
+    /* ===========================
+       MAPA
+    ============================ */
+    #map { width: 100%; height: 500px; margin: 40px 0; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+    /* ===========================
+       RODAPÉ
+    ============================ */
+    footer { background: #ff4a00; color: white; padding: 30px 20px; text-align: center; font-size: 0.9rem; }
+    footer a { color: #ffd4b2; margin: 0 10px; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ===========================
+       RESPONSIVIDADE
+    ============================ */
+    @media (max-width: 900px) {
+      nav ul { flex-wrap: wrap; justify-content: center; }
+      .why-cards, .culture-cards { flex-direction: column; align-items: center; }
+      .why-card, .culture-card { width: 100%; max-width: 350px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <div class="logo-icon">S</div>
+          <div>
+            <div class="logo-text">Sergipe Cultural</div>
+            <div class="logo-subtitle">Turismo e Cultura</div>
+          </div>
+        </div>
+        <ul>
+          <li><a href="#explorar" class="active">Explorar Pontos Turísticos</a></li>
+          <li><a href="#galeria">Galeria</a></li>
+          <li><a href="#map">Mapa</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- BANNER -->
+  <section class="banner">
+    <div class="banner-content">
+      <h1>Sergipe Cultural</h1>
+      <p>Descubra os tesouros culturais e históricos do menor estado do Brasil.</p>
+      <button class="btn-explore" onclick="document.getElementById('map').scrollIntoView({behavior:'smooth'})">Explorar Mapa</button>
+    </div>
+  </section>
+
+  <!-- POR QUE VISITAR -->
+  <section class="section-why" id="explorar">
+    <h2>Por que visitar Sergipe?</h2>
+    <p>Um estado rico em história, cultura e belezas naturais que encantam visitantes do mundo inteiro.</p>
+    <div class="why-cards">
+      <div class="why-card">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 4L12 20v28h40V20z"/><path d="M20 40h24v4H20z"/></svg>
+        <h3>Patrimônio Histórico</h3>
+        <p>Cidades históricas preservadas e monumentos que contam séculos de história brasileira.</p>
+      </div>
+      <div class="why-card">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="20" r="10"/><path d="M12 44c0-11 40-11 40 0z"/></svg>
+        <h3>Cultura Viva</h3>
+        <p>Tradições autênticas, artesanato único e gastronomia que desperta todos os sentidos.</p>
+      </div>
+      <div class="why-card">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M12 44l20-28 20 28z"/></svg>
+        <h3>Belezas Naturais</h3>
+        <p>Paisagens deslumbrantes que vão do litoral paradisíaco aos cânions impressionantes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PONTOS TURÍSTICOS -->
+  <section class="section-culture">
+    <h2>Pontos Turísticos em Destaque</h2>
+    <div class="culture-cards">
+      <div class="culture-card" data-index="0">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Forte_de_Santa_Maria_em_Aracaju.JPG" alt="Forte de Santa Maria">
+        <div class="culture-card-content"><h3>Forte de Santa Maria</h3><p>Símbolo histórico de Aracaju.</p></div>
+      </div>
+      <div class="culture-card" data-index="1">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Aracaju_-_SE_-_Orla_de_Atalaia_09.JPG" alt="Orla de Atalaia">
+        <div class="culture-card-content"><h3>Orla de Atalaia</h3><p>Praias e lazer em Aracaju.</p></div>
+      </div>
+      <div class="culture-card" data-index="2">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Museu_da_Gente_Sergipana.jpg" alt="Museu da Gente Sergipana">
+        <div class="culture-card-content"><h3>Museu da Gente Sergipana</h3><p>Cultura interativa do povo sergipano.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAPA -->
+  <section id="mapa">
+    <h2>Mapa de Pontos Turísticos</h2>
+    <div id="map"></div>
+  </section>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <p>
+      Links Úteis:
+      <a href="https://www.turismo.se.gov.br/" target="_blank" rel="noopener noreferrer">Secretaria de Turismo de Sergipe</a> |
+      <a href="https://guiadoturismo.com.br/sergipe" target="_blank" rel="noopener noreferrer">Guia Turístico Oficial</a>
+    </p>
+    <p>Visite Sergipe - Melhor época: Abril a Setembro</p>
+    <p>© 2024 Sergipe Cultural. Promovendo o turismo cultural sergipano.</p>
+  </footer>
+
+  <!-- LINK JS LEAFLET -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    // Inicializa o mapa com Leaflet
+    const map = L.map('map').setView([-10.9472, -37.0731], 9); 
+    // setView([lat, lng], zoom) - centro aproximado de Sergipe
+
+    // Adiciona camada OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Lista de pontos turísticos
+    const pontos = [
+      { nome: "Forte de Santa Maria", coords: [-10.9089, -37.0678] },
+      { nome: "Orla de Atalaia", coords: [-10.9361, -37.0648] },
+      { nome: "Museu da Gente Sergipana", coords: [-10.9475, -37.0703] }
+    ];
+
+    // Adiciona marcadores interativos
+    const markers = [];
+    pontos.forEach((p, index) => {
+      const marker = L.marker(p.coords).addTo(map).bindPopup(`<b>${p.nome}</b>`);
+      markers.push(marker);
+    });
+
+    // Torna os cards clicáveis para abrir o mapa e popup correspondente
+    const cards = document.querySelectorAll(".culture-card");
+    cards.forEach(card => {
+      card.addEventListener("click", () => {
+        const idx = card.dataset.index;
+        map.setView(pontos[idx].coords, 14); // centraliza e aproxima
+        markers[idx].openPopup(); // abre popup do ponto clicado
+      });
+    });
+  </script>
+
+</body>
+</html>
