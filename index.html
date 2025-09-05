@@ -1,323 +1,990 @@
 <!DOCTYPE html>
-<!-- Define que o documento é HTML5 -->
-
 <html lang="pt-BR">
-<!-- Define o idioma da página como português do Brasil -->
 
 <head>
-  <meta charset="UTF-8">
-  <!-- Define codificação UTF-8 para suportar acentos e caracteres especiais -->
+       
+     
+    <meta charset="UTF-8">
+         
+     
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Sergipe Cultural</title>
+           
+     
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+         
+     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Ajusta a largura da página de acordo com a tela do dispositivo (responsivo) -->
+        <style>
+        /* ===========================
+       RESET GLOBAL
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        * {
+            margin: 0;
+            /* Zera a margem de todos os elementos. */
+            padding: 0;
+            /* Zera o preenchimento (padding) de todos os elementos. */
+            box-sizing: border-box;
+            /* Garante que a largura e altura dos elementos incluam o padding e a borda, facilitando o layout. */
+        }
 
-  <title>Sergipe Cultural</title>
-  <!-- Título da aba do navegador -->
+        /* ===========================
+       ESTILO GERAL DO BODY
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            /* Define uma família de fontes moderna e legível. */
+            background: linear-gradient(135deg, #fff2cc 0%, #ffe6e1 100%);
+            /* Cria um fundo degradê de amarelo para rosa. */
+            color: #333;
+            /* Define a cor padrão do texto. */
+            line-height: 1.5;
+            /* Define o espaçamento entre as linhas do texto. */
+        }
 
-  <!-- Link CSS do Leaflet (biblioteca de mapas interativos) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        /* ===========================
+       LINKS
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        a {
+            text-decoration: none;
+            /* Remove o sublinhado padrão dos links. */
+            color: inherit;
+            /* Faz com que os links herdem a cor do texto do elemento pai. */
+        }
 
-  <style>
-    /* ===========================
-       RESET GLOBAL
-    ============================ */
-    * {
-      margin: 0; /* Remove margens padrão */
-      padding: 0; /* Remove padding padrão */
-      box-sizing: border-box; /* Inclui padding e border no tamanho total */
-    }
+        /* ===========================
+       LISTAS
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        ul {
+            list-style: none;
+            /* Remove os marcadores padrão (pontos ou números) das listas. */
+        }
 
-    /* ===========================
-       ESTILO GERAL DO BODY
-    ============================ */
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Fonte moderna e legível */
-      background: linear-gradient(135deg, #fff2cc 0%, #ffe6e1 100%); /* Fundo degradê amarelo/rosa */
-      color: #333; /* Cor padrão do texto */
-      line-height: 1.5; /* Espaçamento entre linhas */
-    }
+        /* ===========================
+       CABEÇALHO FIXO
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        header {
+            background: #fff;
+            /* Define o fundo do cabeçalho como branco. */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            /* Adiciona uma sombra suave para dar profundidade. */
+            position: sticky;
+            /* Faz o cabeçalho 'grudar' no topo da tela ao rolar. */
+            top: 0;
+            /* Garante que o cabeçalho grude no topo da janela de visualização. */
+            z-index: 1000;
+            /* Define uma alta prioridade para o cabeçalho, garantindo que ele apareça sobre outros elementos. */
+        }
 
-    /* ===========================
-       LINKS
-    ============================ */
-    a {
-      text-decoration: none; /* Remove sublinhado dos links */
-      color: inherit; /* Herda a cor do texto */
-    }
+        /* ===========================
+       CONTAINER CENTRAL
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        .container {
+            max-width: 1100px;
+            /* Define a largura máxima do conteúdo. */
+            margin: auto;
+            /* Centraliza o contêiner horizontalmente. */
+            padding: 0 20px;
+            /* Adiciona espaçamento interno nas laterais. */
+        }
 
-    /* ===========================
-       LISTAS
-    ============================ */
-    ul {
-      list-style: none; /* Remove marcadores das listas */
-    }
+        /* ===========================
+       NAVBAR
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        nav {
+            display: flex;
+            /* Utiliza flexbox para alinhar os itens horizontalmente. */
+            align-items: center;
+            /* Alinha os itens verticalmente no centro. */
+            justify-content: space-between;
+            /* Distribui o espaço entre os itens. */
+            height: 70px;
+            /* Define uma altura fixa para a barra de navegação. */
+        }
 
-    /* ===========================
-       CABEÇALHO FIXO
-    ============================ */
-    header {
-      background: #fff; /* Fundo branco */
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Sombra leve */
-      position: sticky; /* Cabeçalho fixo no topo */
-      top: 0; /* Posicionado no topo */
-      z-index: 1000; /* Fica acima de outros elementos */
-    }
+        /* ===========================
+    LOGO
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        .logo {
+            display: flex;
+            /* Utiliza flexbox para alinhar o ícone e o texto lado a lado. */
+            align-items: center;
+            /* Alinha os itens verticalmente. */
+            gap: 10px;
+            /* Adiciona um espaço de 10px entre o ícone e o texto. */
+        }
 
-    /* ===========================
-       CONTAINER CENTRAL
-    ============================ */
-    .container {
-      max-width: 1100px; /* Largura máxima do conteúdo */
-      margin: auto; /* Centraliza horizontalmente */
-      padding: 0 20px; /* Espaçamento lateral */
-    }
+        /* O estilo abaixo (.logo-icon) foi removido ou comentado, pois não será mais usado. */
+        /* Se você ainda tiver um elemento com a classe 'logo-icon' no seu HTML, certifique-se de removê-lo ou substituí-lo. */
 
-    /* ===========================
-       NAVBAR
-    ============================ */
-    nav {
-      display: flex; /* Flexbox para alinhar horizontalmente */
-      align-items: center; /* Alinha verticalmente ao centro */
-      justify-content: space-between; /* Espaço entre elementos */
-      height: 70px; /* Altura fixa da barra */
-    }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff7200, #ff4a00);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 0 8px rgba(255, 114, 0, 0.8);
+        }
 
-    /* ===========================
-       LOGO
-    ============================ */
-    .logo {
-      display: flex; /* Ícone + texto em linha */
-      align-items: center; /* Alinhamento vertical */
-      gap: 10px; /* Espaçamento entre ícone e texto */
-    }
 
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #ff7200, #ff4a00); /* Degradê laranja */
-      border-radius: 8px; /* Bordas arredondadas */
-      display: flex; justify-content: center; align-items: center; /* Centraliza conteúdo */
-      color: white; font-weight: 700; font-size: 20px;
-      box-shadow: 0 0 8px rgba(255,114,0,0.8); /* Sombra laranja */
-    }
+        .logo-bandeira {
+            /* Estiliza a imagem da bandeira de Sergipe. */
+            width: 100px;
+            /* Define a largura da imagem. */
+            height: 68px;
+            /* Define a altura da imagem. */
+            object-fit: cover;
+            /* Garante que a imagem preencha o espaço sem distorcer, cortando as partes que excederem. */
+            border-radius: 8px;
+            /* Arredonda os cantos da imagem. */
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            /* Adiciona uma sombra sutil para destacar a bandeira. */
+        }
 
-    .logo-text { font-weight: 700; font-size: 22px; color: #d84300; line-height: 1; }
-    .logo-subtitle { font-size: 12px; color: #777; }
+        .logo-text {
+            font-weight: 700;
+            /* Define o peso da fonte como negrito. */
+            font-size: 22px;
+            /* Define o tamanho da fonte. */
+            color: #d84300;
+            /* Define a cor do texto. */
+            line-height: 1;
+            /* Define o espaçamento entre as linhas. */
+        }
 
-    /* ===========================
-       MENU DE NAVEGAÇÃO
-    ============================ */
-    nav ul { display: flex; gap: 20px; }
-    nav ul li a {
-      font-weight: 600; font-size: 14px; color: #555;
-      padding: 8px 15px; border-radius: 6px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-    nav ul li a:hover, nav ul li a.active {
-      background: linear-gradient(90deg, #ff7200, #ff4a00); color: white;
-    }
+        /* Estiliza o texto principal do logo. */
+        .logo-subtitle {
+            font-size: 12px;
+            /* Define o tamanho da fonte do subtítulo. */
+            color: #777;
+            /* Define a cor do subtítulo. */
+        }
 
-    /* ===========================
-       BANNER
-    ============================ */
-    .banner {
-      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') center center/cover no-repeat;
-      height: 400px; position: relative; color: #f0d28a;
-      text-align: center; display: flex; flex-direction: column; justify-content: center;
-    }
-    .banner::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
-    .banner-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
-    .banner-content h1 { font-size: 3rem; font-weight: 900; text-shadow: 2px 2px 10px #00000088; }
-    .banner-content p { font-size: 1.2rem; margin-top: 10px; text-shadow: 1px 1px 8px #00000088; }
-    .btn-explore {
-      margin-top: 20px; background: linear-gradient(90deg, #ff7200, #ff4a00); color: white;
-      border: none; padding: 12px 25px; font-weight: 700; font-size: 1rem;
-      border-radius: 30px; cursor: pointer; transition: background 0.3s ease;
-      box-shadow: 0 3px 8px rgba(255,114,0,0.7);
-    }
-    .btn-explore:hover { background: linear-gradient(90deg, #ff4a00, #ff7200); }
+        /* Estiliza o subtítulo do logo. */
 
-    /* ===========================
-       SEÇÃO POR QUE VISITAR
-    ============================ */
-    .section-why { background: #fff8f3; padding: 40px 20px; text-align: center; }
-    .section-why h2 { font-weight: 900; font-size: 2rem; color: #d84300; margin-bottom: 15px; }
-    .section-why p { font-size: 1.1rem; color: #555; margin-bottom: 30px; }
-    .why-cards { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
-    .why-card {
-      background: white; border-radius: 12px; box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-      padding: 20px; width: 280px; display: flex; flex-direction: column; align-items: center; text-align: center;
-      transition: transform 0.3s ease;
-    }
-    .why-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-    .why-card svg { width: 48px; height: 48px; margin-bottom: 15px; fill: #d84300; }
-    .why-card h3 { font-weight: 700; margin-bottom: 10px; color: #d84300; }
-    .why-card p { font-size: 0.95rem; color: #666; }
+        /* ===========================
+    MENU DE NAVEGAÇÃO
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        nav ul {
+            display: flex;
+            gap: 30px;
+            /* **AJUSTADO:** Aumenta o espaçamento entre os itens do menu para evitar quebra de linha e melhorar a legibilidade. */
+        }
 
-    /* ===========================
-       SEÇÃO PONTOS TURÍSTICOS
-    ============================ */
-    .section-culture { padding: 40px 20px; background: #fff; text-align: center; }
-    .section-culture h2 { font-weight: 900; font-size: 2rem; color: #d84300; margin-bottom: 30px; }
-    .culture-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-    .culture-card { background: #fff8f3; border-radius: 12px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); width: 320px; overflow: hidden; transition: transform 0.3s ease; cursor: pointer; }
-    .culture-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
-    .culture-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
-    .culture-card-content { padding: 15px; text-align: left; }
-    .culture-card-content h3 { font-weight: 700; color: #d84300; margin-bottom: 8px; font-size: 1.1rem; }
-    .culture-card-content p { font-size: 0.95rem; color: #555; }
+        /* Estiliza a lista do menu para exibir os itens em linha e com espaçamento. */
+        nav ul li a {
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+            /* Define o peso, tamanho e cor da fonte dos links. */
+            padding: 8px 15px;
+            border-radius: 6px;
+            /* Adiciona padding e arredondamento nas bordas. */
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* Adiciona uma transição suave para as cores. */
+            white-space: nowrap;
+            /* **ADICIONADO:** Impede que o texto quebre para a próxima linha, mantendo-o em uma única linha. */
+        }
 
-    /* ===========================
-       MAPA
-    ============================ */
-    #map { width: 100%; height: 500px; margin: 40px 0; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        nav ul li a:hover,
+        nav ul li a.active {
+            background: linear-gradient(90deg, #ff7200, #ff4a00);
+            color: white;
+            /* Define o estilo ao passar o mouse ou quando o link está ativo. */
+        }
 
-    /* ===========================
-       RODAPÉ
-    ============================ */
-    footer { background: #ff4a00; color: white; padding: 30px 20px; text-align: center; font-size: 0.9rem; }
-    footer a { color: #ffd4b2; margin: 0 10px; }
-    footer a:hover { text-decoration: underline; }
+        /* Os outros estilos do seu CSS permanecem os mesmos */
 
-    /* ===========================
-       RESPONSIVIDADE
-    ============================ */
-    @media (max-width: 900px) {
-      nav ul { flex-wrap: wrap; justify-content: center; }
-      .why-cards, .culture-cards { flex-direction: column; align-items: center; }
-      .why-card, .culture-card { width: 100%; max-width: 350px; }
-    }
-  </style>
+        /* ===========================
+       BANNER
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        .banner {
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') center center/cover no-repeat;
+            /* Define uma imagem de fundo, centraliza-a e garante que ela cubra toda a área. */
+            height: 400px;
+            position: relative;
+            color: #f0d28a;
+            /* Define altura, posição relativa e cor do texto. */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Centraliza o conteúdo do banner. */
+        }
+
+        .banner::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+        }
+
+        /* Cria uma sobreposição escura sobre a imagem de fundo para melhorar a legibilidade do texto. */
+        .banner-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Posiciona o conteúdo do banner acima da sobreposição e o centraliza. */
+        .banner-content h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 10px #00000088;
+        }
+
+        /* Estiliza o título principal do banner com uma sombra para destaque. */
+        .banner-content p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            text-shadow: 1px 1px 8px #00000088;
+        }
+
+        /* Estiliza o parágrafo do banner com espaçamento e sombra. */
+        .btn-explore {
+            margin-top: 20px;
+            background: linear-gradient(90deg, #ff7200, #ff4a00);
+            color: white;
+            /* Define margem, fundo degradê e cor do texto. */
+            border: none;
+            padding: 12px 25px;
+            font-weight: 700;
+            font-size: 1rem;
+            /* Remove a borda e define padding, peso e tamanho da fonte. */
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            /* Arredonda as bordas, muda o cursor e adiciona transição. */
+            box-shadow: 0 3px 8px rgba(255, 114, 0, 0.7);
+            /* Adiciona uma sombra de destaque. */
+        }
+
+        .btn-explore:hover {
+            background: linear-gradient(90deg, #ff4a00, #ff7200);
+        }
+
+        /* Inverte o degradê ao passar o mouse. */
+
+        /* ===========================
+       SEÇÃO POR QUE VISITAR
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        .section-why {
+            background: #fff8f3;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* Estiliza a seção de "Por que visitar" com cor de fundo, padding e alinhamento. */
+        .section-why h2 {
+            font-weight: 900;
+            font-size: 2rem;
+            color: #d84300;
+            margin-bottom: 15px;
+        }
+
+        /* Estiliza o título da seção. */
+        .section-why p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        /* Estiliza o parágrafo da seção. */
+        .why-cards {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* Usa flexbox para exibir os cartões em linha, centralizados e com espaçamento, permitindo quebra de linha. */
+        .why-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            /* Define fundo, borda e sombra. */
+            padding: 20px;
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            /* Define padding, largura e centraliza o conteúdo do cartão. */
+            transition: transform 0.3s ease;
+            /* Adiciona uma transição suave para o efeito de hover. */
+        }
+
+        .why-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Move o cartão para cima e aumenta a sombra ao passar o mouse. */
+        .why-card svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 15px;
+            fill: #d84300;
+        }
+
+        /* Estiliza os ícones SVG dentro dos cartões. */
+        .why-card h3 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #d84300;
+        }
+
+        /* Estiliza o título do cartão. */
+        .why-card p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* Estiliza o parágrafo do cartão. */
+
+        /* ===========================
+       SEÇÃO PONTOS TURÍSTICOS E CARROSSEL
+       NOVO: Estilos do carrossel
+    ============================ */
+        .section-culture {
+            padding: 40px 20px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .section-culture h2 {
+            font-weight: 900;
+            font-size: 2rem;
+            color: #d84300;
+            margin-bottom: 30px;
+        }
+
+        .carousel-container {
+            position: relative;
+            /* Define a posição relativa para posicionar os botões */
+            max-width: 900px;
+            /* Largura máxima do carrossel */
+            margin: 0 auto;
+            /* Centraliza o contêiner */
+            overflow: hidden;
+            /* Oculta as imagens que estão fora da visualização */
+            border-radius: 15px;
+            /* Bordas arredondadas no contêiner */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            /* Sombra para destacar */
+        }
+
+        .carousel-inner {
+            display: flex;
+            /* Exibe os itens lado a lado */
+            transition: transform 0.5s ease-in-out;
+            /* Transição suave para o movimento do carrossel */
+            /* O JavaScript vai manipular a propriedade `transform` */
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            /* Cada item ocupa 100% da largura do contêiner */
+            height: 450px;
+            /* Altura fixa do item do carrossel */
+            position: relative;
+            /* Permite o posicionamento da sobreposição de texto */
+            display: flex;
+            /* Flexbox para centralizar o conteúdo */
+            align-items: center;
+            /* Alinhamento vertical ao centro */
+            justify-content: center;
+            /* Alinhamento horizontal ao centro */
+            text-align: center;
+            /* Alinhamento do texto */
+        }
+
+        .carousel-item img {
+            width: 100%;
+            /* A imagem ocupa 100% da largura do item */
+            height: 100%;
+            /* A imagem ocupa 100% da altura do item */
+            object-fit: cover;
+            /* A imagem cobre todo o espaço sem distorção */
+            position: absolute;
+            /* Posição absoluta para servir como fundo */
+            z-index: 1;
+            /* Fica atrás do conteúdo de texto */
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            /* Posição absoluta para a sobreposição */
+            inset: 0;
+            /* Ocupa todo o espaço do item */
+            background: rgba(0, 0, 0, 0.5);
+            /* Fundo semi-transparente para o texto */
+            z-index: 2;
+            /* Fica acima da imagem */
+        }
+
+        .carousel-caption {
+            position: relative;
+            /* Posição relativa para ficar sobre a sobreposição */
+            z-index: 3;
+            /* Fica acima de tudo */
+            color: white;
+            /* Cor do texto branca */
+            padding: 20px;
+            /* Espaçamento interno */
+        }
+
+        .carousel-caption h3 {
+            font-size: 2.5rem;
+            /* Tamanho do título */
+            margin-bottom: 10px;
+            /* Margem inferior */
+        }
+
+        .carousel-caption p {
+            font-size: 1.2rem;
+            /* Tamanho do parágrafo */
+        }
+
+        .carousel-btn {
+            position: absolute;
+            /* Posição absoluta para os botões */
+            top: 50%;
+            /* Posiciona os botões verticalmente no meio */
+            transform: translateY(-50%);
+            /* Ajusta o alinhamento vertical */
+            background: rgba(255, 255, 255, 0.5);
+            /* Fundo semi-transparente */
+            color: #333;
+            /* Cor do ícone */
+            border: none;
+            /* Remove a borda */
+            padding: 15px;
+            /* Espaçamento interno */
+            cursor: pointer;
+            /* Muda o cursor para indicar que é clicável */
+            border-radius: 50%;
+            /* Torna o botão redondo */
+            z-index: 4;
+            /* Garante que os botões fiquem acima de todos os elementos */
+            transition: background 0.3s ease;
+            /* Transição suave para o efeito de hover */
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            /* Fundo mais opaco ao passar o mouse */
+        }
+
+        .carousel-btn.prev {
+            left: 10px;
+            /* Posiciona o botão 'anterior' na esquerda */
+        }
+
+        .carousel-btn.next {
+            right: 10px;
+            /* Posiciona o botão 'próximo' na direita */
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            /* Posição absoluta para os indicadores */
+            bottom: 20px;
+            /* Posiciona os indicadores na parte inferior */
+            left: 50%;
+            /* Centraliza horizontalmente */
+            transform: translateX(-50%);
+            /* Ajusta o alinhamento horizontal */
+            z-index: 4;
+            /* Fica acima dos outros elementos */
+            display: flex;
+            /* Exibe os pontos em linha */
+            gap: 10px;
+            /* Espaço entre os pontos */
+        }
+
+        .indicator {
+            width: 10px;
+            /* Largura do indicador */
+            height: 10px;
+            /* Altura do indicador */
+            background: rgba(255, 255, 255, 0.5);
+            /* Cor de fundo semi-transparente */
+            border-radius: 50%;
+            /* Forma redonda */
+            cursor: pointer;
+            /* Muda o cursor */
+            transition: background 0.3s ease;
+            /* Transição suave */
+        }
+
+        .indicator.active {
+            background: #ff7200;
+            /* Cor do indicador ativo */
+        }
+
+        /* Estiliza o parágrafo do cartão. */
+
+        /* ===========================
+    SEÇÃO PONTOS TURÍSTICOS
+    ============================ */
+        .section-culture {
+            padding: 40px 20px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .section-culture h2 {
+            font-weight: 900;
+            font-size: 2rem;
+            color: #d84300;
+            margin-bottom: 30px;
+        }
+
+        .culture-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .culture-card {
+            background: #fff8f3;
+            border-radius: 12px;
+            /* Arredonda os cantos do contêiner do cartão */
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            overflow: hidden;
+            /* **Mantém:** Essencial para cortar o excesso da imagem */
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .culture-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .culture-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            border-top-left-radius: 12px;
+            /* **Adicionado:** Arredonda o canto superior esquerdo da imagem */
+            border-top-right-radius: 12px;
+            /* **Adicionado:** Arredonda o canto superior direito da imagem */
+        }
+
+        .culture-card-content {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .culture-card-content h3 {
+            font-weight: 700;
+            color: #d84300;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .culture-card-content p {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        /* Estiliza o parágrafo do cartão cultural. */
+
+        /* ===========================
+       MAPA
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        #map {
+            width: 100%;
+            height: 500px;
+            margin: 40px 0;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estiliza a div que contém o mapa, definindo suas dimensões, margens, bordas e sombra. */
+
+        /* ===========================
+       RODAPÉ
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        footer {
+            background: #ff4a00;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Estiliza o rodapé com cor de fundo, cor do texto, padding, alinhamento e tamanho da fonte. */
+        footer a {
+            color: #ffd4b2;
+            margin: 0 10px;
+        }
+
+        /* Estiliza os links no rodapé. */
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Adiciona sublinhado aos links do rodapé ao passar o mouse. */
+
+        /* ===========================
+       RESPONSIVIDADE
+    ============================ */
+        /* Comentário para organizar a seção de CSS. */
+        @media (max-width: 900px) {
+
+            /* Início de uma media query que aplica os estilos somente em telas com largura máxima de 900px. */
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            /* Permite que os itens do menu quebrem a linha e sejam centralizados. */
+            .why-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Muda o layout dos cartões para uma única coluna, centralizada. */
+            .why-card {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            /* Define a largura dos cartões para 100% da largura do contêiner, com um limite máximo. */
+        }
+
+        /* Fim da media query. */
+    </style>
 </head>
 
 <body>
-
-  <!-- CABEÇALHO -->
-  <header>
-    <div class="container">
-      <nav>
-        <div class="logo">
-          <div class="logo-icon">S</div>
-          <div>
-            <div class="logo-text">Sergipe Cultural</div>
-            <div class="logo-subtitle">Turismo e Cultura</div>
-          </div>
+        <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="imagens/bandeira-sergipe.png" alt="Bandeira de Sergipe" class="logo-bandeira">
+                    <div>
+                        <div class="logo-text">Sergipe Cultural</div>
+                        <div class="logo-subtitle">Turismo e Cultura</div>
+                    </div>
+                </div>
+                <ul>
+                    <li><a href="#explorar" class="active">Explorar Pontos Turísticos</a></li>
+                    <li><a href="#galeria">Galeria</a></li>
+                    <li><a href="#mapa">Mapa</a></li>
+                </ul>
+            </nav>
         </div>
-        <ul>
-          <li><a href="#explorar" class="active">Explorar Pontos Turísticos</a></li>
-          <li><a href="#galeria">Galeria</a></li>
-          <li><a href="#map">Mapa</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+    </header>
 
-  <!-- BANNER -->
-  <section class="banner">
-    <div class="banner-content">
-      <h1>Sergipe Cultural</h1>
-      <p>Descubra os tesouros culturais e históricos do menor estado do Brasil.</p>
-      <button class="btn-explore" onclick="document.getElementById('map').scrollIntoView({behavior:'smooth'})">Explorar Mapa</button>
-    </div>
-  </section>
+        <section class="banner">
+                <div class="banner-content">
+                        <h1>Sergipe Cultural</h1>
+                        <p>Descubra os tesouros culturais e históricos do menor estado do Brasil.</p>
+                        <button class="btn-explore"        
+                onclick="document.getElementById('mapa').scrollIntoView({behavior:'smooth'})">Explorar
+                                Mapa</button>
+                    </div>
+            </section>
 
-  <!-- POR QUE VISITAR -->
-  <section class="section-why" id="explorar">
-    <h2>Por que visitar Sergipe?</h2>
-    <p>Um estado rico em história, cultura e belezas naturais que encantam visitantes do mundo inteiro.</p>
-    <div class="why-cards">
-      <div class="why-card">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 4L12 20v28h40V20z"/><path d="M20 40h24v4H20z"/></svg>
-        <h3>Patrimônio Histórico</h3>
-        <p>Cidades históricas preservadas e monumentos que contam séculos de história brasileira.</p>
-      </div>
-      <div class="why-card">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="20" r="10"/><path d="M12 44c0-11 40-11 40 0z"/></svg>
-        <h3>Cultura Viva</h3>
-        <p>Tradições autênticas, artesanato único e gastronomia que desperta todos os sentidos.</p>
-      </div>
-      <div class="why-card">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M12 44l20-28 20 28z"/></svg>
-        <h3>Belezas Naturais</h3>
-        <p>Paisagens deslumbrantes que vão do litoral paradisíaco aos cânions impressionantes.</p>
-      </div>
-    </div>
-  </section>
+        <section class="section-why" id="explorar">
+                <h2>Por que visitar Sergipe?</h2>
+                <p>Um estado rico em história, cultura e belezas naturais que encantam visitantes do mundo inteiro.</p>
+                <div class="why-cards">
+                        <div class="why-card">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                                       
+                             
+                    <path d="M32 4L12 20v28h40V20z" />
+                                       
+                             
+                    <path d="M20 40h24v4H20z" />
+                                     
+                           
+                </svg>
+                                <h3>Patrimônio Histórico</h3>
+                                <p>Cidades históricas preservadas e monumentos que contam séculos de história
+                    brasileira.</p>
+                            </div>
+                        <div class="why-card">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                                       
+                             
+                    <circle cx="32" cy="20" r="10" />
+                                       
+                             
+                    <path d="M12 44c0-11 40-11 40 0z" />
+                                     
+                           
+                </svg>
+                                <h3>Cultura Viva</h3>
+                                <p>Tradições autênticas, artesanato único e gastronomia que desperta todos os sentidos.
+                </p>
+                            </div>
+                        <div class="why-card">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                                       
+                             
+                    <path d="M12 44l20-28 20 28z" />
+                                     
+                           
+                </svg>
+                                <h3>Belezas Naturais</h3>
+                                <p>Paisagens deslumbrantes que vão do litoral paradisíaco aos cânions impressionantes.
+                </p>
+                            </div>
+                    </div>
+            </section>
 
-  <!-- PONTOS TURÍSTICOS -->
-  <section class="section-culture">
-    <h2>Pontos Turísticos em Destaque</h2>
-    <div class="culture-cards">
-      <div class="culture-card" data-index="0">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Forte_de_Santa_Maria_em_Aracaju.JPG" alt="Forte de Santa Maria">
-        <div class="culture-card-content"><h3>Forte de Santa Maria</h3><p>Símbolo histórico de Aracaju.</p></div>
-      </div>
-      <div class="culture-card" data-index="1">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Aracaju_-_SE_-_Orla_de_Atalaia_09.JPG" alt="Orla de Atalaia">
-        <div class="culture-card-content"><h3>Orla de Atalaia</h3><p>Praias e lazer em Aracaju.</p></div>
-      </div>
-      <div class="culture-card" data-index="2">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Museu_da_Gente_Sergipana.jpg" alt="Museu da Gente Sergipana">
-        <div class="culture-card-content"><h3>Museu da Gente Sergipana</h3><p>Cultura interativa do povo sergipano.</p></div>
-      </div>
-    </div>
-  </section>
+          <section class="section-culture" id="galeria">
+                <h2>Pontos Turísticos em Destaque</h2>
+                <div class="carousel-container">
+                        <div class="carousel-inner">
+                                        <div class="carousel-item">
+                                                  <img src="imagens/largo-da-gente-sergipana.jpg"
+                        alt="Largo da Gente Sergipana">
+                                        <div class="carousel-overlay"></div>
+                                        <div class="carousel-caption">
+                                                <h3>Largo da Gente Sergipana</h3>
+                                                <p>Uma homenagem à cultura e ao povo sergipano.</p>
+                                              </div>
+                                      </div>
+                                        <div class="carousel-item">
+                                                  <img src="imagens/orla_da_atalaia.jpg" alt="Orla de Atalaia">
+                                        <div class="carousel-overlay"></div>
+                                        <div class="carousel-caption">
+                                                <h3>Orla de Atalaia</h3>
+                                                <p>O maior cartão-postal de Aracaju, com praias e lazer.</p>
+                                              </div>
+                                      </div>
+                                        <div class="carousel-item">
+                                                  <img src="imagens/museu_da_gente_sergipana.jpg"
+                        alt="Museu da Gente Sergipana">
+                                        <div class="carousel-overlay"></div>
+                                        <div class="carousel-caption">
+                                                <h3>Museu da Gente Sergipana</h3>
+                                                <p>Um mergulho na história e cultura do povo sergipano.</p>
+                                              </div>
+                                      </div>
+                              </div>
+                              <button class="carousel-btn prev" aria-label="Anterior"><i          
+                    class="fa-solid fa-chevron-left"></i></button>
+                        <button class="carousel-btn next" aria-label="Próximo"><i
+                    class="fa-solid fa-chevron-right"></i></button>
+                              <div class="carousel-indicators"></div>
+                      </div>
+              </section>
+         <section class="section-culture">
+            <h2>Pontos Turísticos em Destaque</h2>
+            <div class="culture-cards">
+                  <div class="culture-card" data-index="0">
+                        <img src="imagens/largo-da-gente-sergipana.jpg"           alt="Forte de Santa Maria">
+                        <div class="culture-card-content">
+                              <h3>largo-da-gente-sergipana</h3>
+                              <p>Símbolo histórico de Aracaju.</p>
+                            </div>
+                      </div>
+                  <div class="culture-card" data-index="1">
+                        <img src="imagens/orla_da_atalaia.jpg"           alt="Orla de Atalaia">
+                        <div class="culture-card-content">
+                              <h3>Orla de Atalaia</h3>
+                              <p>Praias e lazer em Aracaju.</p>
+                            </div>
+                      </div>
+                  <div class="culture-card" data-index="2">
+                        <img src="imagens/museu_da_gente_sergipana.jpg"           alt="Museu da Gente Sergipana">
+                        <div class="culture-card-content">
+                              <h3>Museu da Gente Sergipana</h3>
+                              <p>Cultura interativa do povo sergipano.</p>
+                            </div>
+                      </div>
+                </div>
+          </section>
 
-  <!-- MAPA -->
-  <section id="mapa">
-    <h2>Mapa de Pontos Turísticos</h2>
-    <div id="map"></div>
-  </section>
+        <section id="mapa">
+                <h2>Mapa de Pontos Turísticos</h2>
+                <div id="map"></div>
+              </section>
 
-  <!-- RODAPÉ -->
-  <footer>
-    <p>
-      Links Úteis:
-      <a href="https://www.turismo.se.gov.br/" target="_blank" rel="noopener noreferrer">Secretaria de Turismo de Sergipe</a> |
-      <a href="https://guiadoturismo.com.br/sergipe" target="_blank" rel="noopener noreferrer">Guia Turístico Oficial</a>
-    </p>
-    <p>Visite Sergipe - Melhor época: Abril a Setembro</p>
-    <p>© 2024 Sergipe Cultural. Promovendo o turismo cultural sergipano.</p>
-  </footer>
+        <footer>
+                <p>
+                        Links Úteis:
+                        <a href="https://www.turismo.se.gov.br/" target="_blank" rel="noopener noreferrer">Secretaria de
+                Turismo de
+                                Sergipe</a> |
+                        <a href="https://guiadoturismo.com.br/sergipe" target="_blank" rel="noopener noreferrer">Guia
+                Turístico
+                                Oficial</a>
+                      </p>
+                <p>Visite Sergipe - Melhor época: Abril a Setembro</p>
+                <p>© 2024 Sergipe Cultural. Promovendo o turismo cultural sergipano.</p>
+              </footer>
 
-  <!-- LINK JS LEAFLET -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+       
+     
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+         
+     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
 
-  <script>
-    // Inicializa o mapa com Leaflet
-    const map = L.map('map').setView([-10.9472, -37.0731], 9); 
-    // setView([lat, lng], zoom) - centro aproximado de Sergipe
+       
+     
+    <script>
+        // Inicializa o mapa com Leaflet
+        // Comentário sobre a funcionalidade do código.
+        const map = L.map('mapa').setView([-10.9472, -37.0731], 9);
+        // CORRIGIDO: O ID do mapa no HTML agora é 'mapa', então a seleção foi ajustada para 'mapa'.
+        // setView([lat, lng], zoom) - centro aproximado de Sergipe
+        // Comentário explicativo sobre a função.
 
-    // Adiciona camada OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19,
-    }).addTo(map);
+        // Adiciona camada OpenStreetMap
+        // Comentário sobre a funcionalidade do código.
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            // Define a camada de azulejos do mapa (tiles) usando o OpenStreetMap e o texto de atribuição.
+            maxZoom: 19,
+            // Define o nível máximo de zoom permitido.
+        }).addTo(map);
+        // Adiciona a camada de azulejos ao mapa.
 
-    // Lista de pontos turísticos
-    const pontos = [
-      { nome: "Forte de Santa Maria", coords: [-10.9089, -37.0678] },
-      { nome: "Orla de Atalaia", coords: [-10.9361, -37.0648] },
-      { nome: "Museu da Gente Sergipana", coords: [-10.9475, -37.0703] }
-    ];
+        // NOVO: A lista de pontos turísticos foi atualizada para corresponder às imagens do carrossel.
+        const pontos = [
+            { nome: "Largo da Gente Sergipana", coords: [-10.9469, -37.0702] },
+            { nome: "Orla de Atalaia", coords: [-10.9361, -37.0648] },
+            { nome: "Museu da Gente Sergipana", coords: [-10.9475, -37.0703] }
+        ];
 
-    // Adiciona marcadores interativos
-    const markers = [];
-    pontos.forEach((p, index) => {
-      const marker = L.marker(p.coords).addTo(map).bindPopup(`<b>${p.nome}</b>`);
-      markers.push(marker);
-    });
+        // Adiciona marcadores interativos
+        // Comentário sobre a funcionalidade do código.
+        const markers = [];
+        // Cria um array vazio para armazenar os objetos dos marcadores.
+        pontos.forEach((p, index) => {
+            // Itera sobre o array 'pontos'.
+            const marker = L.marker(p.coords).addTo(map).bindPopup(`<b>${p.nome}</b>`);
+            // Cria um marcador para cada ponto, adiciona-o ao mapa e associa um pop-up com o nome do local.
+            markers.push(marker);
+            // Adiciona o marcador recém-criado ao array 'markers'.
+        });
 
-    // Torna os cards clicáveis para abrir o mapa e popup correspondente
-    const cards = document.querySelectorAll(".culture-card");
-    cards.forEach(card => {
-      card.addEventListener("click", () => {
-        const idx = card.dataset.index;
-        map.setView(pontos[idx].coords, 14); // centraliza e aproxima
-        markers[idx].openPopup(); // abre popup do ponto clicado
-      });
-    });
-  </script>
 
+        /* ===========================
+           JAVASCRIPT DO CARROSSEL
+           NOVO: Código para o carrossel interativo
+        ============================ */
+        const carouselInner = document.querySelector('.carousel-inner');
+        // Seleciona o elemento que contém todos os itens do carrossel
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        // Seleciona todos os itens individuais do carrossel
+        const prevBtn = document.querySelector('.carousel-btn.prev');
+        // Seleciona o botão de "anterior"
+        const nextBtn = document.querySelector('.carousel-btn.next');
+        // Seleciona o botão de "próximo"
+        const indicatorsContainer = document.querySelector('.carousel-indicators');
+        // Seleciona o contêiner dos indicadores de posição
+
+        let currentIndex = 0;
+        // Inicializa um contador para rastrear o item atual do carrossel
+
+        // Cria os indicadores de navegação (pontinhos)
+        carouselItems.forEach((_, index) => {
+            const indicator = document.createElement('div');
+            // Cria uma nova div para o indicador
+            indicator.classList.add('indicator');
+            // Adiciona a classe 'indicator'
+            indicator.addEventListener('click', () => {
+                // Adiciona um evento de clique para cada indicador
+                showItem(index); // Chama a função para exibir o item correspondente
+            });
+            indicatorsContainer.appendChild(indicator);
+            // Adiciona a div do indicador ao contêiner de indicadores
+        });
+
+        const indicators = document.querySelectorAll('.indicator');
+        // Seleciona todos os indicadores criados
+
+        function showItem(index) {
+            // Função para exibir um item específico do carrossel
+            if (index < 0) {
+                // Se o índice for menor que 0 (passou do primeiro), volta para o último
+                index = carouselItems.length - 1;
+            } else if (index >= carouselItems.length) {
+                // Se o índice for maior que o número de itens (passou do último), volta para o primeiro
+                index = 0;
+            }
+            currentIndex = index;
+            // Atualiza o índice atual
+
+            const offset = -currentIndex * 100;
+            // Calcula o deslocamento horizontal para mover o carrossel. Cada item tem 100% de largura
+            carouselInner.style.transform = `translateX(${offset}%)`;
+            // Aplica a transformação CSS para mover o carrossel
+
+            updateIndicators();
+            // Chama a função para atualizar a cor dos indicadores
+        }
+
+        function updateIndicators() {
+            // Função para atualizar os indicadores
+            indicators.forEach((indicator, index) => {
+                if (index === currentIndex) {
+                    // Se o índice do indicador for o mesmo que o índice atual, torna-o ativo
+                    indicator.classList.add('active');
+                } else {
+                    // Caso contrário, remove a classe 'active'
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        // Adiciona eventos de clique aos botões de navegação
+        prevBtn.addEventListener('click', () => {
+            showItem(currentIndex - 1);
+            // Decrementa o índice e exibe o item anterior
+        });
+
+        nextBtn.addEventListener('click', () => {
+            showItem(currentIndex + 1);
+            // Incrementa o índice e exibe o próximo item
+        });
+
+        // Torna os itens do carrossel clicáveis para abrir o mapa e popup correspondente
+        // MANTIDO: O trecho para interagir com o mapa, agora conectado aos itens do carrossel.
+        document.querySelectorAll('.carousel-item').forEach((item, index) => {
+            item.addEventListener('click', () => {
+                map.setView(pontos[index].coords, 14); // centraliza e aproxima
+                markers[index].openPopup(); // abre popup do ponto clicado
+            });
+        });
+
+        // Exibe o primeiro item do carrossel ao carregar a página
+        showItem(0);
+    </script>
 </body>
+
 </html>
